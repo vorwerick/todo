@@ -13,6 +13,8 @@ struct TodoDetailView: View {
     var parameterUserId: Int
     var parameterId: Int
     
+    @Environment(\.presentationMode) var presentationMode
+    
     
     @StateObject var viewModel = TodoDetailViewModel()
     
@@ -29,14 +31,19 @@ struct TodoDetailView: View {
                 Text("V řešení")
                     .foregroundColor(.orange)
                 
-                Button("Přihlásit se") {
+                Button("Vyřešit") {
                     Task{
-                        await viewModel.complete()
+                        await viewModel.complete(userId: parameterUserId, id: parameterId) {
+                            self.presentationMode.wrappedValue.dismiss()
+                        } onError: {
+                            
+                        }
+
                     }
                 }
                 .padding()
                 .buttonStyle(.borderedProminent)
-                .background(.red)
+             
             }
         
         }

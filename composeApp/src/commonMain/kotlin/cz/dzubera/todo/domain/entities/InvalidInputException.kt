@@ -1,4 +1,4 @@
-package cz.dzubera.todo.business.entities
+package cz.dzubera.todo.domain.entities
 
 class InvalidInputException(message: String?) : Exception(message) {
 }

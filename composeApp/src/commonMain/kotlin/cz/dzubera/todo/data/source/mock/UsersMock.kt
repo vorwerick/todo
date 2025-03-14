@@ -1,6 +1,6 @@
-package cz.dzubera.todo.source.mock
+package cz.dzubera.todo.data.source.mock
 
-import cz.dzubera.todo.business.entities.User
+import cz.dzubera.todo.domain.entities.User
 
 object UsersMock {
 

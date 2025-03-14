@@ -1,6 +1,6 @@
-package cz.dzubera.todo.source.mock
+package cz.dzubera.todo.data.source.mock
 
-import cz.dzubera.todo.business.entities.TodoDetail
+import cz.dzubera.todo.domain.entities.TodoDetail
 
 object TaskMock {
 
@@ -10,5 +10,7 @@ object TaskMock {
     val task04: TodoDetail = TodoDetail(userId = 2, id = 4, title = "Pohodový úkol", completed = false)
     val task05: TodoDetail = TodoDetail(userId = 3, id = 5, title = "Žádný úkol", completed = true)
     val task06: TodoDetail = TodoDetail(userId = 3, id = 6, title = "Nový úkol 1", completed = false)
+
+    val todos = listOf(task01, task02, task03, task04, task05, task06)
 
 }

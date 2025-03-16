@@ -4,7 +4,7 @@ import ComposeApp
 @main
 struct iOSApp: App {
     init() {
-        SharedMain.initialize()
+        SharedMain().initialize()
     }
     
     var body: some Scene {

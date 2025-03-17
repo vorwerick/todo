@@ -18,10 +18,25 @@ struct TodoDetailView: View {
     
     @StateObject var viewModel = TodoDetailViewModel()
     
+    @State private var text: String = ""
+    @State private var showEditDialog = false
+    
     var body: some View {
         VStack {
             
-            Text("Název úkolu")
+           
+            HStack{
+                Text("Název úkolu")
+                Button(action: {
+                               showEditDialog = true
+                           }) {
+                               Image(systemName: "pencil")
+                                   .font(.title)
+                                   .padding()
+                                   .background(Circle().fill(Color.blue))
+                                   .foregroundColor(.white)
+                           }
+            }
             Text(viewModel.todoDetail?.title ?? "")
                 .font(.title)
             if(viewModel.todoDetail?.completed == true){
@@ -47,12 +62,66 @@ struct TodoDetailView: View {
             }
         
         }
-        .navigationTitle("Datail úkolu")
+        .navigationTitle("Detail úkolu")
         .task{
             await viewModel.fetchDetail(userId: parameterUserId, id: parameterId)
         }
+        .sheet(isPresented: $showEditDialog) {
+            EditTextView(parameterId: parameterId, userId: parameterUserId, paremeterViewModel: viewModel,text: $text)
+               }
     }
 }
+
+struct EditTextView: View {
+    
+    var parameterId: Int
+    var userId: Int
+    var paremeterViewModel: TodoDetailViewModel
+    
+    @Binding var text: String
+    @Environment(\.dismiss) var dismiss
+    @State  var errorMessage: String?
+    
+    
+    var body: some View {
+        VStack {
+            Text("Upravit název")
+                .font(.headline)
+            
+            TextField("Zadejte nový název", text: $text)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+            
+            HStack{
+                Button("Uložit") {
+                    Task{
+                        await paremeterViewModel.changeTitle(userId: userId, id: parameterId, newTitle: text, onSuccess: {
+                            Task{
+                                await paremeterViewModel.fetchDetail(userId: userId, id: parameterId)
+                            }
+                            dismiss()
+                    
+                        }, onError: {
+                            errorMessage = "Something went wrong"
+                        })
+                    }
+                  
+                }
+                Button("Zpět") {
+                    dismiss()
+                  
+                }
+            }
+            .padding()
+            if errorMessage != nil{
+                Text("Něco se pokazilo")
+                .foregroundColor(.red)
+            }
+        }
+        .padding()
+    }
+}
+
 
 #Preview {
     //TodoListView()

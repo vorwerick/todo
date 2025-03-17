@@ -4,15 +4,15 @@ import cz.dzubera.todo.data.repository.TaskRepository
 import cz.dzubera.todo.domain.entities.TodoDetail
 
 class TodoTasksMockSource : TaskRepository {
-    override fun getTaskDetail(userId: Int, taskId: Int): TodoDetail? {
+    override suspend fun getTaskDetail(userId: Int, taskId: Int): TodoDetail? {
         return TaskMock.todos.firstOrNull { it.userId == userId && it.id == taskId }
     }
 
-    override fun getTasks(userId: Int): List<TodoDetail> {
+    override suspend fun getTasks(userId: Int): List<TodoDetail> {
         return TaskMock.todos.filter { it.userId == userId }
     }
 
-    override fun updateTaskName(userId: Int, taskId: Int, newName: String): Boolean {
+    override suspend fun updateTaskName(userId: Int, taskId: Int, newName: String): Boolean {
         val res = TaskMock.todos.filter { it.userId == userId && it.id == taskId }.firstOrNull()
         if (res == null) {
             return false
@@ -21,7 +21,7 @@ class TodoTasksMockSource : TaskRepository {
         return true
     }
 
-    override fun updateTaskState(userId: Int, taskId: Int, newState: Boolean): Boolean {
+    override suspend fun updateTaskState(userId: Int, taskId: Int, newState: Boolean): Boolean {
         val res = TaskMock.todos.filter { it.userId == userId && it.id == taskId }.firstOrNull()
         if (res == null) {
             return false

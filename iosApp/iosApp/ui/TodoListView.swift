@@ -26,8 +26,26 @@ struct TodoListView: View {
                         if(list!.count > 0){
                             List(list!, id: \.self) { todo in
                                 NavigationLink(destination: TodoDetailView(parameterUserId: parameterUserId, parameterId: Int(todo.id))) {
-                                    Text(todo.title)
+                                    HStack {
+                                        VStack(alignment: .leading) {
+                                            Text(todo.title)
+                                                .font(.headline)
+                                                .foregroundColor(.white)
+                                            if todo.completed {
+                                                Text("Dokončeno")
+                                                    .font(.caption)
+                                                    .foregroundColor(.white.opacity(0.8))
+                                            }
+                                        }
+                                        Spacer()
+                                        Image(systemName: todo.completed ? "checkmark.circle.fill" : "circle")
+                                            .foregroundColor(todo.completed ? .green : .gray)
+                                    }
+                                    .padding()
+                                    .background(todo.completed ? Color.green.opacity(0.7) : Color.red.opacity(0.7))
+                                    .cornerRadius(10)
                                 }
+                                .listRowBackground(Color.clear)
                             }
                         } else {
                             Text("Žádné úkoly")

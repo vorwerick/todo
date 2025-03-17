@@ -7,6 +7,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    kotlin("plugin.serialization") version "1.9.0"
 }
 
 kotlin {
@@ -16,7 +17,7 @@ kotlin {
             jvmTarget.set(JvmTarget.JVM_11)
         }
     }
-    
+
     listOf(
         iosX64(),
         iosArm64(),
@@ -27,9 +28,9 @@ kotlin {
             isStatic = true
         }
     }
-    
+
     sourceSets {
-        
+
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
@@ -44,7 +45,16 @@ kotlin {
             implementation(libs.androidx.lifecycle.viewmodel)
             implementation(libs.androidx.lifecycle.runtime.compose)
             implementation(libs.ktor.client.core)
-            implementation("io.insert-koin:koin-core:3.5.0")
+            implementation(libs.ktor.client.logging)
+            implementation(libs.ktor.serialization.kotlinx.json)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.client.encoding)
+            implementation(libs.koin.core)
+            implementation(libs.slf4j.api)
+            implementation(libs.logback.classic)
+        }
+        iosMain.dependencies {
+            implementation(libs.ktor.client.darwin)
         }
     }
 }
@@ -77,6 +87,9 @@ android {
 }
 
 dependencies {
+    implementation("io.ktor:ktor-client-apache:3.1.1")
+    implementation("io.ktor:ktor-client-okhttp-jvm:3.1.1")
+    implementation("io.ktor:ktor-client-cio-jvm:3.1.1")
     debugImplementation(compose.uiTooling)
 }
 

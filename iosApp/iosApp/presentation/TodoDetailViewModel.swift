@@ -49,6 +49,26 @@ class TodoDetailViewModel: ObservableObject{
             
          }
     }
+    
+    func changeTitle(userId: Int, id: Int, newTitle: String,onSuccess: @escaping () -> Void, onError: @escaping () -> Void) async {
+  
+        do {
+            let result: KotlinBoolean = try await UpdateTaskNameUseCase(userId: Int32(userId), taskId: Int32(id), newName: newTitle).use()
+                
+            if result.boolValue {
+                DispatchQueue.main.async {
+                    onSuccess()
+                }
+            } else {
+                DispatchQueue.main.async {
+                    onError()
+                }
+            }
+         } catch {
+             print("Something went wrong: \(error)")
+            
+         }
+    }
    
     
   

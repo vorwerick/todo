@@ -27,7 +27,7 @@ class TodoTasksHttpSource : TaskRepository {
     }
 
     override suspend fun updateTaskName(userId: Int, taskId: Int, newName: String): Boolean {
-        val response = client.post(urlString = "https://jsonplaceholder.typicode.com/todos/$taskId") {
+        val response = client.put(urlString = "https://jsonplaceholder.typicode.com/todos/$taskId") {
             contentType(ContentType.Application.Json)
             setBody(JsonObject(mapOf("title" to JsonPrimitive(newName))))
         }
@@ -35,7 +35,7 @@ class TodoTasksHttpSource : TaskRepository {
     }
 
     override suspend fun updateTaskState(userId: Int, taskId: Int, newState: Boolean): Boolean {
-        val response = client.post(urlString = "https://jsonplaceholder.typicode.com/todos/$taskId") {
+        val response = client.put(urlString = "https://jsonplaceholder.typicode.com/todos/$taskId") {
             contentType(ContentType.Application.Json)
             setBody(JsonObject(mapOf("completed" to JsonPrimitive(newState))))
         }

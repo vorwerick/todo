@@ -42,7 +42,7 @@ struct TodoListView: View {
                                             .foregroundColor(todo.completed ? .green : .gray)
                                     }
                                     .padding()
-                                    .background(todo.completed ? Color.green.opacity(0.7) : Color.red.opacity(0.7))
+                                    .background(todo.completed ? Color.green.opacity(0.7) : Color.orange.opacity(0.7))
                                     .cornerRadius(10)
                                 }
                                 .listRowBackground(Color.clear)

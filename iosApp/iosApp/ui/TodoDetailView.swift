@@ -16,7 +16,7 @@ struct TodoDetailView: View {
     @Environment(\.presentationMode) var presentationMode
     
     
-    @StateObject var viewModel = TodoDetailViewModel()
+    @ObservedObject var viewModel = TodoDetailViewModel()
     
     @State private var text: String = ""
     @State private var showEditDialog = false
@@ -42,9 +42,11 @@ struct TodoDetailView: View {
             if(viewModel.todoDetail?.completed == true){
                 Text("Hotovo")
                     .foregroundColor(.green)
+                    .font(.title)
             } else {
                 Text("V řešení")
                     .foregroundColor(.orange)
+                    .font(.title)
                 
                 Button("Vyřešit") {
                     Task{
@@ -67,7 +69,11 @@ struct TodoDetailView: View {
             await viewModel.fetchDetail(userId: parameterUserId, id: parameterId)
         }
         .sheet(isPresented: $showEditDialog) {
-            EditTextView(parameterId: parameterId, userId: parameterUserId, paremeterViewModel: viewModel,text: $text)
+            EditTextView(parameterId: parameterId, userId: parameterUserId, paremeterViewModel: viewModel,onSuccess:{
+                Task{
+                    await viewModel.fetchDetail(userId: parameterUserId, id: parameterId)
+                }
+            }, text: $text)
                }
     }
 }
@@ -77,6 +83,7 @@ struct EditTextView: View {
     var parameterId: Int
     var userId: Int
     var paremeterViewModel: TodoDetailViewModel
+    var onSuccess:() -> Void
     
     @Binding var text: String
     @Environment(\.dismiss) var dismiss
@@ -86,32 +93,41 @@ struct EditTextView: View {
     var body: some View {
         VStack {
             Text("Upravit název")
-                .font(.headline)
-            
-            TextField("Zadejte nový název", text: $text)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-            
-            HStack{
-                Button("Uložit") {
-                    Task{
-                        await paremeterViewModel.changeTitle(userId: userId, id: parameterId, newTitle: text, onSuccess: {
-                            Task{
-                                await paremeterViewModel.fetchDetail(userId: userId, id: parameterId)
-                            }
-                            dismiss()
-                    
-                        }, onError: {
-                            errorMessage = "Something went wrong"
-                        })
-                    }
-                  
-                }
-                Button("Zpět") {
-                    dismiss()
-                  
-                }
-            }
+                   .font(.headline)
+                   .foregroundColor(.primary)
+
+               TextField("Zadejte nový název", text: $text)
+                   .textFieldStyle(RoundedBorderTextFieldStyle())
+                   .padding()
+                   .background(Color(.systemGray6))
+                   .cornerRadius(10)
+                   .padding(.horizontal)
+
+               HStack {
+                   Button("Zpět") {
+                       dismiss()
+                   }
+                   .padding()
+                   .background(Color.red)
+                   .foregroundColor(.white)
+                   .cornerRadius(8)
+                   .padding(.trailing)
+
+                   Button("Uložit") {
+                       Task {
+                           await paremeterViewModel.changeTitle(userId: userId, id: parameterId, newTitle: text, onSuccess: {
+                               onSuccess()
+                               dismiss()
+                           }, onError: {
+                               errorMessage = "Something went wrong"
+                           })
+                       }
+                   }
+                   .padding()
+                   .background(Color.green)
+                   .foregroundColor(.white)
+                   .cornerRadius(8)
+               }
             .padding()
             if errorMessage != nil{
                 Text("Něco se pokazilo")
